@@ -1,4 +1,4 @@
-name: Build Glass Browser
+name: Build ZenView
 
 on:
   push:
@@ -25,10 +25,10 @@ jobs:
       run: npm install -g electron-packager
     
     - name: Build application
-      run: electron-packager . "Glass Browser" --platform=win32 --arch=x64 --icon=assets/icon.ico --out=dist
+      run: electron-packager . "ZenView" --platform=win32 --arch=x64 --icon=assets/icon.ico --out=dist
     
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: glass-browser
+        name: zenview
         path: dist/

@@ -1,5 +1,5 @@
 ![N|Solid](https://github.com/mitchas/glass-browser/raw/master/assets/icon64.png)
-# **Glass Browser**
+# **ZenView**
 
 > 此项目基于 [glass-browser](https://github.com/mitchas/glass-browser) 修改而来。
 

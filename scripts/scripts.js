@@ -70,9 +70,9 @@ $(document).ready(function () {
 
 // Change window Opacity
 function changeOpacity(opacity){
-    $("#bgOverlay").css('background-color', 'rgba(0, 0, 30, ' + opacity + ')');
-    $(".window-chrome").css('background-color', 'rgba(10, 15, 52, ' + opacity + ')');
-    $(".app-controls").css('background-color', 'rgba(10, 15, 52, ' + opacity + ')');
+    $("#bgOverlay").css('background-color', 'rgba(255, 255, 255, ' + opacity + ')');
+    $("#browserView").css('opacity', 1);
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
 }
 
 // App Controls
@@ -113,74 +113,420 @@ function browserBack(){
 function enableClickThrough(){
     console.log("Clickthrough related UI adjustment enabled.")
     $("#browserView").addClass("full-size");
-    $(".app-controls").slideUp(200, function(){
-        $(".window-chrome").slideUp(200);
-    });
-}
-
-// 修改窗口最小化事件处理逻辑，去掉窗口穿透关闭逻辑
-remote.BrowserWindow.getFocusedWindow().on('minimize',function(event){
-    $("body").css('opacity', 0.95);
-    $("#transparencyRange").val(0.95);
-
-    $("#browserView").removeClass("full-size");
-    $(".window-chrome").slideDown(200, function(){
-        $(".app-controls").slideDown(200);
-    });
-    console.log("Clickthrough related UI adjustment disabled");
-});
-
-// Window Controls
-function openWebsite(){
-    shell.openExternal("https://www.goofish.com/personal?spm=a21ybx.item.itemHeader.2.740847edODrgl2&userId=2219527179864");
-}
-function minimizeWindow(){
-    var window = remote.getCurrentWindow();
-    window.minimize();
-}
-var windowIsMaximized = false;
-function maximizeWindow(){
-    var window = remote.getCurrentWindow();
-    const { width, height } = remote.screen.getPrimaryDisplay().workAreaSize;
-    if(windowIsMaximized){
-        windowIsMaximized = false;
-        window.setSize(800, 600);
-    }else{
-        window.setSize(Math.ceil(width * .95), Math.ceil(height * .95));
-        window.setPosition(Math.ceil(width * .025), Math.ceil(height * .025))
-        windowIsMaximized = true;
-    }
-}
-function closeWindow(){
-    var window = remote.getCurrentWindow();
-    window.hide(); // 隐藏而不是关闭窗口
-}
-
-// 切换设置面板显示/隐藏
-function toggleSettings() {
-    $('#settingsPanel').toggle();
-}
-
-// 保存设置
-function saveSettings() {
-    var settings = {
-        saveLastPage: $('#saveLastPage').is(':checked'),
-        alwaysOnTop: $('#alwaysOnTop').is(':checked')
-    };
-    localStorage.setItem('zenview-settings', JSON.stringify(settings));
-}
-
-// 加载设置
-function loadSettings() {
-    var savedSettings = localStorage.getItem('zenview-settings');
-    if (savedSettings) {
-        var settings = JSON.parse(savedSettings);
-        $('#saveLastPage').prop('checked', settings.saveLastPage);
-        $('#alwaysOnTop').prop('checked', settings.alwaysOnTop);
-        var currentWindow = remote.getCurrentWindow();
-        currentWindow.setAlwaysOnTop(settings.alwaysOnTop);
-    } else {
-        // 默认设置
-        $('#alwaysOnTop').prop('checked', true);
-    }
-}
+    $("#bgOverlay").hide();
+    $("#browserView").css('opacity', 1);
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 255, 1)');
+    $("#browserView").css('background-color', 'rgba(255, 255, 2

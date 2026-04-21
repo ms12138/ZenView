@@ -3,7 +3,6 @@
 
 > 此项目基于 [glass-browser](https://github.com/mitchas/glass-browser) 修改而来。
 
-### [下载](https://github.com/mitchas/glass-browser/tree/master/releases)
 
 一个适用于 Windows 的浮动透明浏览器。
   - 始终保持在其他程序和应用之上。

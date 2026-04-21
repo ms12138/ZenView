@@ -48,7 +48,7 @@ $(document).ready(function () {
             $('#urlField').val(lastUrl);
             webview.src = lastUrl;
         }
-    });
+    }
 
     // Address bar form
     $("#addressBar").submit(function(e) {

@@ -4,7 +4,7 @@
   "description": "A floating transparent desktop browser.",
   "main": "main.js",
   "scripts": {
-    "start": "node_modules\\electron\\electron.exe main.js"
+    "start": "electron main.js"
   },
   "repository": "https://github.com/mitchas/glass-browser",
   "keywords": [

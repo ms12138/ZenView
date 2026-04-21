@@ -1,8 +1,9 @@
-const { app, BrowserWindow, globalShortcut, ipcMain } = require('electron');
+const { app, BrowserWindow, globalShortcut, ipcMain, Tray, Menu } = require('electron');
 const path = require('path');
 const url = require('url');
 
 let mainWindow;
+let tray;
 let lastAltPressTime = 0;
 const DOUBLE_PRESS_INTERVAL = 300;
 
@@ -12,7 +13,13 @@ function createWindow() {
     frame: false,
     width: 900,
     height: 600,
-    transparent: true
+    transparent: true,
+    skipTaskbar: true, // 隐藏任务栏图标
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      webviewTag: true
+    }
   });
 
   mainWindow.loadURL(url.format({
@@ -24,6 +31,69 @@ function createWindow() {
   mainWindow.setAlwaysOnTop(true);
   mainWindow.on('closed', () => { mainWindow = null; });
   mainWindow.on('minimize', () => { console.log("UI adjustment on minimize"); });
+  
+  // 创建托盘图标
+  createTray();
+}
+
+function createTray() {
+  const iconPath = path.join(__dirname, 'assets', 'icon.png');
+  
+  // 尝试多个可能的图标名称
+  let trayIcon;
+  const possibleIcons = ['icon.png', 'icon.ico', 'icon64.png'];
+  for (let icon of possibleIcons) {
+    let testPath = path.join(__dirname, 'assets', icon);
+    try {
+      tray = new Tray(testPath);
+      trayIcon = testPath;
+      break;
+    } catch (e) {
+      continue;
+    }
+  }
+  
+  if (!tray) {
+    console.error('Failed to create tray icon');
+    return;
+  }
+  
+  const contextMenu = Menu.buildFromTemplate([
+    { label: '显示/隐藏', click: () => {
+      if (mainWindow) {
+        if (mainWindow.isVisible()) {
+          mainWindow.hide();
+        } else {
+          mainWindow.show();
+          mainWindow.focus();
+        }
+      }
+    }},
+    { type: 'separator' },
+    { label: '退出', click: () => {
+      app.quit();
+    }}
+  ]);
+  
+  tray.setToolTip('ZenView Browser');
+  tray.setContextMenu(contextMenu);
+  
+  // 双击托盘图标显示/隐藏
+  tray.on('double-click', () => {
+    if (mainWindow) {
+      if (mainWindow.isVisible()) {
+        mainWindow.hide();
+      } else {
+        mainWindow.show();
+        mainWindow.focus();
+      }
+    }
+  });
+  
+  // 防止托盘图标在窗口关闭时消失
+  app.on('window-all-closed', (e) => {
+    e.preventDefault(); // 阻止默认关闭行为
+  });
 }
 
 function registerShortcuts() {

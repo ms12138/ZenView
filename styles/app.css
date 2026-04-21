@@ -10,8 +10,9 @@
   -webkit-app-region: drag;
   z-index: 5000;
   background-color: white;
-  z-index: 5000000;
-  background-color: #0A0F34;
+  z-index: 10000;
+  background-color: rgba(10, 15, 52, 0.95);
+  position: relative;
 }
 
 .window-chrome .app-label {
@@ -120,11 +121,21 @@ body {
   padding: 0px;
   padding: 2px;
   font-family: "Segoe UI", sans-serif;
-  background-color: rgba(0, 0, 30, 0.15);
+  background-color: transparent;
   overflow: hidden;
-  opacity: 0.95;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
+}
+
+.bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 30, 0.95);
+  z-index: 1;
+  pointer-events: none;
 }
 
 #browserView {
@@ -133,8 +144,8 @@ body {
   height: 100%;
   height: calc(100vh - 78px) !important;
   margin-top: 32px;
-  z-index: 5;
-  background-color: white;
+  z-index: 2;
+  background-color: transparent;
 }
 
 #browserView.full-size {
@@ -149,9 +160,9 @@ body {
   position: fixed;
   top: 42px;
   left: 2px;
-  z-index: 1000000;
-  background-color: #1167f1;
-  background-color: #0A0F34;
+  z-index: 10000;
+  background-color: rgba(17, 103, 241, 0.95);
+  background-color: rgba(10, 15, 52, 0.95);
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   padding: 0px 15px 0 0;
@@ -313,5 +324,85 @@ input[type=range]:focus::-webkit-slider-runnable-track {
   background: white;
   -webkit-transition: 0.2s;
   transition: 0.2s;
+}
+
+/* 设置面板样式 */
+.settings-panel {
+  position: fixed;
+  top: 45px;
+  right: 10px;
+  width: 220px;
+  background-color: rgba(10, 15, 52, 0.95);
+  padding: 15px;
+  border-radius: 8px;
+  z-index: 15000;
+  display: none;
+  -webkit-box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
+          box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
+  color: white;
+  -webkit-app-region: no-drag;
+}
+
+.settings-panel h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.setting-item {
+  margin-bottom: 12px;
+}
+
+.setting-item label {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-size: 14px;
+}
+
+.setting-item input[type="checkbox"] {
+  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.window-chrome .window-controls .settings {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  width: 45px;
+  -webkit-app-region: no-drag;
+}
+
+.window-chrome .window-controls .settings img {
+  width: 16px;
+  height: auto;
+  opacity: 0.75;
+  display: block;
+  margin: 0 auto;
+  -webkit-filter: invert(100%);
+          filter: invert(100%);
+}
+
+.window-chrome .window-controls .settings:hover {
+  -webkit-transition: 0.15s;
+  transition: 0.15s;
+  background-color: #00001e;
 }
 /*# sourceMappingURL=app.css.map */

@@ -11,13 +11,30 @@
 
     </head>
 <body>
+    <div class="bg-overlay" id="bgOverlay"></div>
 
     <div class="window-chrome">
         <div class="app-label">ZenView</div>
         <div class="window-controls">
             <div class="info" onclick="openWebsite()"><img src="assets/ui/info.png"/></div>
+            <div class="settings" onclick="toggleSettings()"><img src="assets/ui/eye.png"/></div>
             <div class="maximize" onclick="maximizeWindow()"><img src="assets/ui/maximize.png" /></div>
             <div class="close" onclick="closeWindow()"><img src="assets/ui/close.png" /></div>
+        </div>
+    </div>
+
+    <!-- 弹出的设置面板 -->
+    <div id="settingsPanel" class="settings-panel">
+        <h3>设置</h3>
+        <div class="setting-item">
+            <label>
+                <input type="checkbox" id="saveLastPage"> 保持上次关闭的网页
+            </label>
+        </div>
+        <div class="setting-item">
+            <label>
+                <input type="checkbox" id="alwaysOnTop" checked> 窗口置顶
+            </label>
         </div>
     </div>
 

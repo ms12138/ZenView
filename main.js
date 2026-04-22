@@ -106,7 +106,7 @@ function registerShortcuts() {
   let lastBackquotePressTime = 0;
   const DOUBLE_PRESS_INTERVAL = 300;
   
-  const success = globalShortcut.register('Backquote', () => {
+  const success = globalShortcut.register('`', () => {
     const now = Date.now();
     if (now - lastBackquotePressTime < DOUBLE_PRESS_INTERVAL) {
       // 双击 Backquote 键
@@ -125,14 +125,14 @@ function registerShortcuts() {
   });
 
   if (success) {
-    console.log('Global shortcut double Backquote (·) registered for show/hide window');
+    console.log('Global shortcut double Backtick (`) registered for show/hide window');
   } else {
-    console.error('注册 Backquote 失败，可能已被系统占用');
+    console.error('注册 Backtick 失败，可能已被系统占用');
   }
   
   console.log('Shortcuts:');
   console.log('1. Double middle click to show/hide window (when window is visible)');
-  console.log('2. Double Backquote (·) to show/hide window (works even when window is hidden)');
+  console.log('2. Double Backtick (`) to show/hide window (works even when window is hidden)');
   console.log('3. Double-click tray icon to show/hide window');
 }
 

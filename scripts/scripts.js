@@ -9,6 +9,8 @@ let isBorderHidden = false;
 let isAutoHideEnabled = false;
 let isTomatoModeEnabled = false;
 let isSettingsPanelOpen = false;
+let lastMiddleClickTime = 0;
+const DOUBLE_CLICK_INTERVAL = 300;
 
 $(document).ready(function () {
     var webview = document.getElementById('browserView');
@@ -17,69 +19,71 @@ $(document).ready(function () {
     // Load settings first
     loadSettings();
     
-    // 点击其他地方关闭设置面板
+    // 点击任何地方都关闭设置面板
     $(document).on('click', function(e) {
+        console.log('Document clicked, isSettingsPanelOpen:', isSettingsPanelOpen);
         if (isSettingsPanelOpen) {
-            var settingsPanel = $('#settingsPanel');
-            var settingsButton = $('.settings');
-            
-            // 检查点击是否在设置面板或设置按钮外
-            if (!settingsPanel.is(e.target) && 
-                settingsPanel.has(e.target).length === 0 && 
-                !settingsButton.is(e.target) && 
-                settingsButton.has(e.target).length === 0) {
-                settingsPanel.hide();
-                isSettingsPanelOpen = false;
+            $('#settingsPanel').hide();
+            isSettingsPanelOpen = false;
+            console.log('Settings panel closed');
+        }
+    });
+    
+    // 点击设置按钮时阻止事件冒泡
+    $('.settings').on('click', function(e) {
+        e.stopPropagation();
+        console.log('Settings button clicked');
+        toggleSettings();
+    });
+    
+    // 点击设置面板内容时阻止事件冒泡
+    $('#settingsPanel').on('click', function(e) {
+        e.stopPropagation();
+        console.log('Settings panel clicked, preventing close');
+    });
+    
+    // 双击鼠标中键隐藏窗口
+    $(document).on('mousedown', function(e) {
+        if (e.button === 1) { // 中键
+            const now = Date.now();
+            if (now - lastMiddleClickTime < DOUBLE_CLICK_INTERVAL) {
+                console.log('Double middle click detected, hiding window');
+                currentWindow.hide();
+                lastMiddleClickTime = 0;
+            } else {
+                lastMiddleClickTime = now;
             }
         }
     });
     
-    // 阻止设置面板点击事件冒泡
-    $('#settingsPanel').on('click', function(e) {
-        e.stopPropagation();
-    });
-    
-    // 设置按钮点击阻止冒泡
-    $('.settings').on('click', function(e) {
-        e.stopPropagation();
-    });
-    
     webview.addEventListener('dom-ready', function () {
+        console.log('Webview dom-ready');
         webview.insertCSS('*::-webkit-scrollbar { width: 0 !important }');
-        webview.executeJavaScript(`
-            let lastScrollTop = 0;
-            function handleScroll() {
-                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                window.postMessage({ 
-                    type: 'zenview-scroll', 
-                    scrollTop: scrollTop, 
-                    direction: scrollTop > lastScrollTop ? 'down' : 'up' 
-                }, '*');
-                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-            }
-            window.addEventListener('scroll', handleScroll);
-            true;
-        `);
         
         // 检查番茄模式
         updateTomatoMode();
     });
     
-    // 监听webview导航事件
+    // 监听webview所有导航相关事件
     webview.addEventListener('will-navigate', function(e) {
-        console.log('Webview will navigate to: ' + e.url);
-        // 这里可以添加导航拦截逻辑
+        console.log('Webview will navigate to:', e.url);
     });
     
     webview.addEventListener('did-navigate', function(e) {
-        console.log('Webview navigated to: ' + e.url);
+        console.log('Webview did navigate to:', e.url);
         $('#urlField').val(e.url);
         updateTomatoMode();
     });
     
     webview.addEventListener('did-navigate-in-page', function(e) {
-        console.log('Webview navigated in page: ' + e.url);
+        console.log('Webview did navigate in page to:', e.url);
         $('#urlField').val(e.url);
+    });
+    
+    webview.addEventListener('new-window', function(e) {
+        console.log('Webview new window requested for:', e.url);
+        // 在当前webview打开新窗口
+        webview.src = e.url;
     });
     
     window.addEventListener('message', function(event) {
@@ -134,33 +138,18 @@ $(document).ready(function () {
         updateTomatoMode();
     });
     
-    // 鼠标移出自动隐藏
-    let mouseLeaveTimer;
-    let mouseInWindow = true;
-    
+    // 鼠标移出自动隐藏 - 简化逻辑
     $(window).on('mouseleave', function(e) {
+        console.log('Mouse leave window, isAutoHideEnabled:', isAutoHideEnabled);
         if (isAutoHideEnabled && currentWindow.isVisible()) {
-            if (e.clientY <= 0 || e.clientX <= 0 || 
-                e.clientX >= window.innerWidth || 
-                e.clientY >= window.innerHeight) {
-                mouseInWindow = false;
-                mouseLeaveTimer = setTimeout(function() {
-                    if (!mouseInWindow) {
-                        currentWindow.hide();
-                    }
-                }, 500);
-            }
-        }
-    });
-    
-    $(window).on('mouseenter', function() {
-        mouseInWindow = true;
-        if (mouseLeaveTimer) {
-            clearTimeout(mouseLeaveTimer);
+            // 直接隐藏，不做太多判定
+            console.log('Hiding window due to mouse leave');
+            currentWindow.hide();
         }
     });
     
     webview.addEventListener('did-finish-load', function() {
+        console.log('Webview did-finish-load:', webview.getURL());
         $('#urlField').val(webview.getURL());
         updateTomatoMode();
     });
@@ -187,14 +176,23 @@ $(document).ready(function () {
         return false;
     });
 
-    // 透明度滑块
-    $("#transparencyRange").on('input change', function(){
+    // 透明度滑块 - 简化逻辑
+    $("#transparencyRange").on('input', function(){
         var opacityValue = parseFloat($(this).val());
-        console.log('Transparency changed: ' + opacityValue);
+        console.log('Transparency input:', opacityValue);
         changeOpacity(opacityValue);
     });
     
-    changeOpacity(parseFloat($("#transparencyRange").val()));
+    $("#transparencyRange").on('change', function(){
+        var opacityValue = parseFloat($(this).val());
+        console.log('Transparency changed:', opacityValue);
+        changeOpacity(opacityValue);
+    });
+    
+    // 初始化透明度
+    setTimeout(function() {
+        changeOpacity(parseFloat($("#transparencyRange").val()));
+    }, 100);
 
     $("input[type=text]").on('click', function () {
        $(this).select();
@@ -215,13 +213,17 @@ function handleWebviewScroll(data) {
 }
 
 function changeOpacity(opacity) {
-    const currentWindow = remote.getCurrentWindow();
-    currentWindow.setOpacity(opacity);
-    console.log('Window opacity set to: ' + opacity);
+    try {
+        const currentWindow = remote.getCurrentWindow();
+        currentWindow.setOpacity(opacity);
+        console.log('Window opacity set successfully to:', opacity);
+    } catch (error) {
+        console.error('Error setting opacity:', error);
+    }
 }
 
 function enableClickThrough() {
-    console.log('enableClickThrough called, current isBorderHidden: ' + isBorderHidden);
+    console.log('enableClickThrough called, current isBorderHidden:', isBorderHidden);
     toggleBorder();
 }
 
@@ -231,7 +233,7 @@ function toggleBorder() {
     const appControls = $('.app-controls');
     
     isBorderHidden = !isBorderHidden;
-    console.log('toggleBorder called, new isBorderHidden: ' + isBorderHidden);
+    console.log('toggleBorder called, new isBorderHidden:', isBorderHidden);
     
     if (isBorderHidden) {
         webview.addClass('full-size');
@@ -254,7 +256,7 @@ function loadURL() {
     
     if (!url) return;
     
-    console.log("loadURL called: " + url);
+    console.log("loadURL called:", url);
 
     if (url.indexOf("http://") !== 0 && url.indexOf("https://") !== 0) {
         url = "https://" + url;
@@ -265,7 +267,7 @@ function loadURL() {
 }
 
 function loadPage(url) {
-    console.log("loadPage called: " + url);
+    console.log("loadPage called:", url);
     var webview = document.getElementById('browserView');
     
     if (url.toLowerCase().indexOf("youtube.com/watch") >= 0) {
@@ -290,9 +292,11 @@ function toggleSettings() {
     if (settingsPanel.is(':visible')) {
         settingsPanel.hide();
         isSettingsPanelOpen = false;
+        console.log('Settings panel hidden');
     } else {
         settingsPanel.show();
         isSettingsPanelOpen = true;
+        console.log('Settings panel shown');
     }
 }
 
@@ -397,7 +401,6 @@ function updateTomatoMode() {
         `);
         console.log('Tomato mode CSS injected');
     } else {
-        // 移除番茄模式的CSS（如果需要）
         console.log('Tomato mode disabled or not on novel page');
     }
 }
@@ -417,7 +420,8 @@ function maximizeWindow() {
 }
 
 function minimizeWindow() {
+    console.log('Minimize button clicked, hiding window instead');
     const currentWindow = remote.getCurrentWindow();
-    currentWindow.minimize();
+    currentWindow.hide();
 }
 

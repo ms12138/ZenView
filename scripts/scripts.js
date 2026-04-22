@@ -15,6 +15,20 @@ $(document).ready(function () {
     // Load settings
     loadSettings();
     
+    // Close settings panel when clicking outside of it
+    $(document).on('click', function(e) {
+        var settingsPanel = $('#settingsPanel');
+        var settingsButton = $('.settings');
+        
+        if (!settingsPanel.is(e.target) && 
+            settingsPanel.has(e.target).length === 0 && 
+            !settingsButton.is(e.target) && 
+            settingsButton.has(e.target).length === 0 &&
+            settingsPanel.is(':visible')) {
+            settingsPanel.hide();
+        }
+    });
+    
     webview.addEventListener('dom-ready', function () {
         webview.insertCSS('*::-webkit-scrollbar { width: 0 !important }');
         // Inject scroll listener for novel toolbar interaction
@@ -48,8 +62,23 @@ $(document).ready(function () {
     
     // Listen for settings from main process
     ipcRenderer.on('restore-border', function() {
+        // Ensure border is visible when window is shown
         if (isBorderHidden) {
             toggleBorder();
+        }
+        // Also ensure tomato mode doesn't hide the border when showing the window
+        if (isTomatoModeEnabled) {
+            // Only show border if not on a novel page
+            const webview = document.getElementById('browserView');
+            const currentUrl = webview.getURL();
+            const isNovelPage = currentUrl.includes('fanqienovel.com') || currentUrl.includes('qidian.com') || currentUrl.includes('read.tomato');
+            if (!isNovelPage) {
+                const windowChrome = $('.window-chrome');
+                const appControls = $('.app-controls');
+                windowChrome.show();
+                appControls.show();
+                $('#browserView').removeClass('full-size');
+            }
         }
     });
     
@@ -126,16 +155,22 @@ $(document).ready(function () {
     }
 
     // Address bar form
-    $("#addressBar").submit(function(e) {
+    $("#addressBar").on('submit', function(e) {
         e.preventDefault();
+        e.stopPropagation();
+        console.log("Address bar form submitted");
         loadURL();
+        return false;
     });
 
     // Opacity slider
-    $("#transparencyRange").change(function(){
-        var opacityValue = $(this).val();
+    $("#transparencyRange").on('input change', function(){
+        var opacityValue = parseFloat($(this).val());
         changeOpacity(opacityValue);
     });
+    
+    // Initialize opacity on load
+    changeOpacity(parseFloat($("#transparencyRange").val()));
 
     // Select all text when changing URL
     $("input[type=text]").click(function () {
@@ -195,28 +230,34 @@ function toggleBorder() {
 
 // App controls
 function loadURL() {
-    var url = $("#urlField").val();
+    var url = $("#urlField").val().trim();
+    
+    // Don't do anything if URL is empty
+    if (!url) return;
+    
+    console.log("Attempting to load: " + url);
 
-    if(url.indexOf("http") >= 0) {
-        loadPage(url);
-    } else {
-        url = "http://" + url;
-        loadPage(url);
+    // Add http:// if no protocol is specified
+    if (url.indexOf("http://") !== 0 && url.indexOf("https://") !== 0) {
+        url = "https://" + url;
+        $("#urlField").val(url); // Update the field to show the full URL
     }
+    
+    loadPage(url);
 }
 
 function loadPage(url) {
-    console.log("Loading " + url);
+    console.log("Loading page: " + url);
+    var webview = document.getElementById('browserView');
+    
     if (url.toLowerCase().indexOf("youtube.com/watch") >= 0) {
         var youtubeID = url.substring(url.indexOf("v=") + 2);
         youtubeID = youtubeID.split('&')[0];
         var youtubeURL = "https://www.youtube.com/embed/" + youtubeID;
 
         $("#urlField").val(youtubeURL);
-        var webview = document.getElementById('browserView');
         webview.loadURL(youtubeURL);
     } else {
-        var webview = document.getElementById('browserView');
         webview.loadURL(url);
     }
 }
@@ -229,7 +270,12 @@ function browserBack() {
 
 // Toggle settings panel
 function toggleSettings() {
-    $('#settingsPanel').toggle();
+    var settingsPanel = $('#settingsPanel');
+    if (settingsPanel.is(':visible')) {
+        settingsPanel.hide();
+    } else {
+        settingsPanel.show();
+    }
 }
 
 // Load settings from localStorage

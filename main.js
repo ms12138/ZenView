@@ -101,9 +101,31 @@ function createTray() {
 }
 
 function registerShortcuts() {
-  // 移除了 Alt+G 快捷键，改为双击鼠标中键显示/隐藏窗口
-  // 该功能已在 scripts.js 中实现
-  console.log('Shortcuts registered: double middle click to show/hide window');
+  // 注册全局快捷键 Alt+Space 来显示/隐藏窗口
+  // 这是为了弥补双击中键在窗口隐藏后无法恢复的问题
+  const success = globalShortcut.register('Alt+Space', () => {
+    if (mainWindow) {
+      if (mainWindow.isVisible()) {
+        mainWindow.hide();
+      } else {
+        mainWindow.show();
+        mainWindow.focus();
+        // Send message to renderer to restore border
+        mainWindow.webContents.send('restore-border');
+      }
+    }
+  });
+
+  if (success) {
+    console.log('Global shortcut Alt+Space registered for show/hide window');
+  } else {
+    console.error('注册 Alt+Space 失败，可能已被系统占用');
+  }
+  
+  console.log('Shortcuts:');
+  console.log('1. Double middle click to show/hide window (when window is visible)');
+  console.log('2. Alt+Space to show/hide window (works even when window is hidden)');
+  console.log('3. Double-click tray icon to show/hide window');
 }
 
 app.on('ready', () => {

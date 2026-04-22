@@ -24,9 +24,9 @@ $(document).ready(function () {
             var settingsButton = $('.settings');
             
             // 检查点击是否在设置面板或设置按钮外
-            if (!settingsPanel.is(e.target) &amp;&amp; 
-                settingsPanel.has(e.target).length === 0 &amp;&amp; 
-                !settingsButton.is(e.target) &amp;&amp; 
+            if (!settingsPanel.is(e.target) && 
+                settingsPanel.has(e.target).length === 0 && 
+                !settingsButton.is(e.target) && 
                 settingsButton.has(e.target).length === 0) {
                 settingsPanel.hide();
                 isSettingsPanelOpen = false;
@@ -53,9 +53,9 @@ $(document).ready(function () {
                 window.postMessage({ 
                     type: 'zenview-scroll', 
                     scrollTop: scrollTop, 
-                    direction: scrollTop &gt; lastScrollTop ? 'down' : 'up' 
+                    direction: scrollTop > lastScrollTop ? 'down' : 'up' 
                 }, '*');
-                lastScrollTop = scrollTop &lt;= 0 ? 0 : scrollTop;
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
             }
             window.addEventListener('scroll', handleScroll);
             true;
@@ -119,10 +119,10 @@ $(document).ready(function () {
     let mouseInWindow = true;
     
     $(window).on('mouseleave', function(e) {
-        if (isAutoHideEnabled &amp;&amp; currentWindow.isVisible()) {
-            if (e.clientY &lt;= 0 || e.clientX &lt;= 0 || 
-                e.clientX &gt;= window.innerWidth || 
-                e.clientY &gt;= window.innerHeight) {
+        if (isAutoHideEnabled && currentWindow.isVisible()) {
+            if (e.clientY <= 0 || e.clientX <= 0 || 
+                e.clientX >= window.innerWidth || 
+                e.clientY >= window.innerHeight) {
                 mouseInWindow = false;
                 mouseLeaveTimer = setTimeout(function() {
                     if (!mouseInWindow) {
@@ -235,7 +235,7 @@ function loadURL() {
     
     console.log("loadURL called: " + url);
 
-    if (url.indexOf("http://") !== 0 &amp;&amp; url.indexOf("https://") !== 0) {
+    if (url.indexOf("http://") !== 0 && url.indexOf("https://") !== 0) {
         url = "https://" + url;
         $("#urlField").val(url);
     }
@@ -247,9 +247,9 @@ function loadPage(url) {
     console.log("loadPage called: " + url);
     var webview = document.getElementById('browserView');
     
-    if (url.toLowerCase().indexOf("youtube.com/watch") &gt;= 0) {
+    if (url.toLowerCase().indexOf("youtube.com/watch") >= 0) {
         var youtubeID = url.substring(url.indexOf("v=") + 2);
-        youtubeID = youtubeID.split('&amp;')[0];
+        youtubeID = youtubeID.split('&')[0];
         var youtubeURL = "https://www.youtube.com/embed/" + youtubeID;
 
         $("#urlField").val(youtubeURL);
@@ -334,7 +334,7 @@ function updateTomatoMode() {
                 ', isNovelPage=' + isNovelPage + 
                 ', isBorderHidden=' + isBorderHidden);
     
-    if (isTomatoModeEnabled &amp;&amp; isNovelPage) {
+    if (isTomatoModeEnabled && isNovelPage) {
         windowChrome.hide();
         appControls.hide();
         $('#browserView').addClass('full-size');

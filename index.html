@@ -18,6 +18,7 @@
         <div class="window-controls">
             <div class="info" onclick="openWebsite()"><img src="assets/ui/info.png"/></div>
             <div class="settings" onclick="toggleSettings()"><img src="assets/ui/eye.png"/></div>
+            <div class="minimize" onclick="minimizeWindow()"><img src="assets/ui/minimize.png" /></div>
             <div class="maximize" onclick="maximizeWindow()"><img src="assets/ui/maximize.png" /></div>
             <div class="close" onclick="closeWindow()"><img src="assets/ui/close.png" /></div>
         </div>
@@ -34,6 +35,11 @@
         <div class="setting-item">
             <label>
                 <input type="checkbox" id="alwaysOnTop" checked> 窗口置顶
+            </label>
+        </div>
+        <div class="setting-item">
+            <label>
+                <input type="checkbox" id="autoHide"> 鼠标移出窗口时自动隐藏
             </label>
         </div>
     </div>

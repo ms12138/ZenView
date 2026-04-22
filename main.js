@@ -66,6 +66,8 @@ function createTray() {
         } else {
           mainWindow.show();
           mainWindow.focus();
+          // Send message to renderer to restore border
+          mainWindow.webContents.send('restore-border');
         }
       }
     }},
@@ -86,6 +88,8 @@ function createTray() {
       } else {
         mainWindow.show();
         mainWindow.focus();
+        // Send message to renderer to restore border
+        mainWindow.webContents.send('restore-border');
       }
     }
   });
@@ -101,7 +105,16 @@ function registerShortcuts() {
   const success = globalShortcut.register('Alt+G', () => {
     const now = Date.now();
     if (now - lastAltPressTime < DOUBLE_PRESS_INTERVAL) {
-      mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+      if (mainWindow) {
+        if (mainWindow.isVisible()) {
+          mainWindow.hide();
+        } else {
+          mainWindow.show();
+          mainWindow.focus();
+          // Send message to renderer to restore border
+          mainWindow.webContents.send('restore-border');
+        }
+      }
     }
     lastAltPressTime = now;
   });
@@ -126,5 +139,8 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   if (mainWindow === null) createWindow();
-  else mainWindow.show(); // 激活时显示窗口
+  else {
+    mainWindow.show(); // 激活时显示窗口
+    mainWindow.webContents.send('restore-border');
+  }
 });

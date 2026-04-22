@@ -1,9 +1,3 @@
-
-// 确保全局$变量
-if (typeof $ === 'undefined') {
-    console.error('jQuery is not loaded');
-}
-
 // 引入必要的模块
 const { remote, ipcRenderer } = require('electron');
 const { BrowserWindow, shell } = remote;
@@ -20,34 +14,34 @@ let webview = null;
 
 // DOM加载完成后执行
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOMContentLoaded - ZenView initializing...');
+    console.log('ZenView 初始化...');
     
     // 初始化全局变量
     webview = document.getElementById('browserView');
     currentWindow = remote.getCurrentWindow();
     
     if (!webview) {
-        console.error('Webview element not found');
+        console.error('Webview 元素未找到');
     }
     if (!currentWindow) {
-        console.error('Current window not found');
+        console.error('当前窗口未找到');
     }
     
     console.log('Webview:', webview);
-    console.log('Current window:', currentWindow);
+    console.log('当前窗口:', currentWindow);
     
     // 加载设置
     loadSettings();
     
     // 点击任何地方关闭设置面板
     document.addEventListener('click', function(e) {
-        console.log('Document clicked, isSettingsPanelOpen:', isSettingsPanelOpen);
+        console.log('文档被点击，设置面板是否打开:', isSettingsPanelOpen);
         if (isSettingsPanelOpen) {
             const settingsPanel = document.getElementById('settingsPanel');
             if (settingsPanel) {
                 settingsPanel.style.display = 'none';
                 isSettingsPanelOpen = false;
-                console.log('Settings panel closed');
+                console.log('设置面板已关闭');
             }
         }
     });
@@ -57,11 +51,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (settingsButton) {
         settingsButton.addEventListener('click', function(e) {
             e.stopPropagation();
-            console.log('Settings button clicked');
+            console.log('设置按钮被点击');
             toggleSettings();
         });
     } else {
-        console.error('Settings button not found');
+        console.error('设置按钮未找到');
     }
     
     // 点击设置面板内容阻止冒泡
@@ -69,10 +63,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (settingsPanel) {
         settingsPanel.addEventListener('click', function(e) {
             e.stopPropagation();
-            console.log('Settings panel clicked, preventing close');
+            console.log('设置面板被点击，阻止关闭');
         });
     } else {
-        console.error('Settings panel not found');
+        console.error('设置面板未找到');
     }
     
     // 双击鼠标中键显示/隐藏窗口
@@ -80,13 +74,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.button === 1) { // 中键
             const now = Date.now();
             if (now - lastMiddleClickTime < DOUBLE_CLICK_INTERVAL) {
-                console.log('Double middle click detected');
+                console.log('检测到双击中键');
                 if (currentWindow) {
                     if (currentWindow.isVisible()) {
-                        console.log('Hiding window');
+                        console.log('隐藏窗口');
                         currentWindow.hide();
                     } else {
-                        console.log('Showing window');
+                        console.log('显示窗口');
                         currentWindow.show();
                         currentWindow.focus();
                     }
@@ -107,11 +101,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         webview.addEventListener('will-navigate', function(e) {
-            console.log('Webview will navigate to:', e.url);
+            console.log('Webview 将要导航到:', e.url);
         });
         
         webview.addEventListener('did-navigate', function(e) {
-            console.log('Webview did navigate to:', e.url);
+            console.log('Webview 已导航到:', e.url);
             const urlField = document.getElementById('urlField');
             if (urlField) {
                 urlField.value = e.url;
@@ -120,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         webview.addEventListener('did-navigate-in-page', function(e) {
-            console.log('Webview did navigate in page to:', e.url);
+            console.log('Webview 页面内导航到:', e.url);
             const urlField = document.getElementById('urlField');
             if (urlField) {
                 urlField.value = e.url;
@@ -128,14 +122,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         webview.addEventListener('new-window', function(e) {
-            console.log('Webview new window requested for:', e.url);
+            e.preventDefault();
+            console.log('Webview 请求打开新窗口:', e.url);
             if (webview) {
                 webview.src = e.url;
             }
         });
         
         webview.addEventListener('did-finish-load', function() {
-            console.log('Webview did-finish-load:', webview.getURL());
+            console.log('Webview 加载完成:', webview.getURL());
             const urlField = document.getElementById('urlField');
             if (urlField) {
                 urlField.value = webview.getURL();
@@ -149,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (addressBar) {
         addressBar.addEventListener('submit', function(e) {
             e.preventDefault();
-            console.log('Address bar form submitted');
+            console.log('地址栏表单已提交');
             loadURL();
             return false;
         });
@@ -160,20 +155,20 @@ document.addEventListener('DOMContentLoaded', function() {
     if (transparencyRange) {
         transparencyRange.addEventListener('input', function() {
             const opacityValue = parseFloat(this.value);
-            console.log('Transparency input:', opacityValue);
+            console.log('透明度输入:', opacityValue);
             changeOpacity(opacityValue);
         });
         
         transparencyRange.addEventListener('change', function() {
             const opacityValue = parseFloat(this.value);
-            console.log('Transparency changed:', opacityValue);
+            console.log('透明度已更改:', opacityValue);
             changeOpacity(opacityValue);
         });
         
         // 初始化透明度
         setTimeout(function() {
             const initialOpacity = parseFloat(transparencyRange.value);
-            console.log('Initializing transparency to:', initialOpacity);
+            console.log('初始化透明度为:', initialOpacity);
             changeOpacity(initialOpacity);
         }, 100);
     }
@@ -190,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveLastPage = document.getElementById('saveLastPage');
     if (saveLastPage) {
         saveLastPage.addEventListener('change', function() {
-            console.log('saveLastPage changed');
+            console.log('saveLastPage 已更改');
             saveSettings();
         });
     }
@@ -198,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const alwaysOnTop = document.getElementById('alwaysOnTop');
     if (alwaysOnTop) {
         alwaysOnTop.addEventListener('change', function() {
-            console.log('alwaysOnTop changed:', this.checked);
+            console.log('alwaysOnTop 已更改:', this.checked);
             saveSettings();
             if (currentWindow) {
                 currentWindow.setAlwaysOnTop(this.checked);
@@ -209,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const autoHide = document.getElementById('autoHide');
     if (autoHide) {
         autoHide.addEventListener('change', function() {
-            console.log('autoHide changed:', this.checked);
+            console.log('autoHide 已更改:', this.checked);
             isAutoHideEnabled = this.checked;
             saveSettings();
         });
@@ -218,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const tomatoMode = document.getElementById('tomatoMode');
     if (tomatoMode) {
         tomatoMode.addEventListener('change', function() {
-            console.log('tomatoMode changed:', this.checked);
+            console.log('tomatoMode 已更改:', this.checked);
             isTomatoModeEnabled = this.checked;
             saveSettings();
             updateTomatoMode();
@@ -227,9 +222,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 鼠标移出自动隐藏
     window.addEventListener('mouseleave', function(e) {
-        console.log('Mouse leave window, isAutoHideEnabled:', isAutoHideEnabled);
+        console.log('鼠标移出窗口，isAutoHideEnabled:', isAutoHideEnabled);
         if (isAutoHideEnabled && currentWindow && currentWindow.isVisible()) {
-            console.log('Hiding window due to mouse leave');
+            console.log('由于鼠标移出隐藏窗口');
             currentWindow.hide();
         }
     });
@@ -274,45 +269,45 @@ function handleWebviewScroll(data) {
 
 // 改变窗口透明度
 function changeOpacity(opacity) {
-    console.log('changeOpacity called with:', opacity);
+    console.log('changeOpacity 被调用，参数:', opacity);
     
     try {
         if (currentWindow) {
-            console.log('Using currentWindow:', currentWindow);
+            console.log('使用 currentWindow:', currentWindow);
             currentWindow.setOpacity(opacity);
-            console.log('Window opacity set successfully');
+            console.log('窗口透明度设置成功');
         } else {
-            console.error('currentWindow is null');
+            console.error('currentWindow 为 null');
             // 尝试获取当前窗口
             const win = remote.getCurrentWindow();
             if (win) {
-                console.log('Using remote.getCurrentWindow():', win);
+                console.log('使用 remote.getCurrentWindow():', win);
                 win.setOpacity(opacity);
-                console.log('Remote window opacity set successfully');
+                console.log('远程窗口透明度设置成功');
             } else {
-                console.error('Could not get current window');
+                console.error('无法获取当前窗口');
             }
         }
     } catch (error) {
-        console.error('Error setting opacity:', error);
+        console.error('设置透明度时出错:', error);
         // 尝试备用方法
         try {
             const allWindows = BrowserWindow.getAllWindows();
             if (allWindows.length > 0) {
                 const mainWin = allWindows[0];
-                console.log('Using first window from getAllWindows:', mainWin);
+                console.log('使用 getAllWindows 中的第一个窗口:', mainWin);
                 mainWin.setOpacity(opacity);
-                console.log('Alternative method succeeded');
+                console.log('备用方法成功');
             }
         } catch (e) {
-            console.error('Alternative method failed:', e);
+            console.error('备用方法失败:', e);
         }
     }
 }
 
 // 切换边框
 function enableClickThrough() {
-    console.log('enableClickThrough called, current isBorderHidden:', isBorderHidden);
+    console.log('enableClickThrough 被调用，当前 isBorderHidden:', isBorderHidden);
     toggleBorder();
 }
 
@@ -323,7 +318,7 @@ function toggleBorder() {
     
     if (webview && windowChrome && appControls) {
         isBorderHidden = !isBorderHidden;
-        console.log('toggleBorder called, new isBorderHidden:', isBorderHidden);
+        console.log('toggleBorder 被调用，新的 isBorderHidden:', isBorderHidden);
         
         if (isBorderHidden) {
             webview.classList.add('full-size');
@@ -339,7 +334,7 @@ function toggleBorder() {
         
         localStorage.setItem('zenview-border-hidden', isBorderHidden);
     } else {
-        console.error('Elements not found for toggleBorder');
+        console.error('toggleBorder 未找到所需元素');
     }
 }
 
@@ -347,12 +342,12 @@ function toggleBorder() {
 function loadURL() {
     const urlField = document.getElementById('urlField');
     if (!urlField) {
-        console.error('URL field not found');
+        console.error('URL 字段未找到');
         return;
     }
     
     let url = urlField.value.trim();
-    console.log('loadURL called:', url);
+    console.log('loadURL 被调用:', url);
     
     if (!url) return;
     
@@ -366,10 +361,10 @@ function loadURL() {
 
 // 加载页面
 function loadPage(url) {
-    console.log('loadPage called:', url);
+    console.log('loadPage 被调用:', url);
     const webview = document.getElementById('browserView');
     if (!webview) {
-        console.error('Webview not found');
+        console.error('Webview 未找到');
         return;
     }
     
@@ -398,26 +393,26 @@ function browserBack() {
 function toggleSettings() {
     const settingsPanel = document.getElementById('settingsPanel');
     if (!settingsPanel) {
-        console.error('Settings panel not found');
+        console.error('设置面板未找到');
         return;
     }
     
-    console.log('toggleSettings called, current display:', settingsPanel.style.display);
+    console.log('toggleSettings 被调用，当前 display:', settingsPanel.style.display);
     
     if (settingsPanel.style.display === 'block') {
         settingsPanel.style.display = 'none';
         isSettingsPanelOpen = false;
-        console.log('Settings panel hidden');
+        console.log('设置面板已隐藏');
     } else {
         settingsPanel.style.display = 'block';
         isSettingsPanelOpen = true;
-        console.log('Settings panel shown');
+        console.log('设置面板已显示');
     }
 }
 
 // 加载设置
 function loadSettings() {
-    console.log('Loading settings...');
+    console.log('加载设置...');
     
     const saveLastPage = document.getElementById('saveLastPage');
     const alwaysOnTop = document.getElementById('alwaysOnTop');
@@ -452,12 +447,12 @@ function loadSettings() {
     }
     
     updateTomatoMode();
-    console.log('Settings loaded');
+    console.log('设置加载完成');
 }
 
 // 保存设置
 function saveSettings() {
-    console.log('Saving settings...');
+    console.log('保存设置...');
     
     const saveLastPage = document.getElementById('saveLastPage');
     const alwaysOnTop = document.getElementById('alwaysOnTop');
@@ -469,7 +464,7 @@ function saveSettings() {
     if (autoHide) localStorage.setItem('zenview-auto-hide', autoHide.checked);
     if (tomatoMode) localStorage.setItem('zenview-tomato-mode', tomatoMode.checked);
     
-    console.log('Settings saved');
+    console.log('设置保存完成');
 }
 
 // 打开网站
@@ -481,7 +476,7 @@ function openWebsite() {
 function updateTomatoMode() {
     const webview = document.getElementById('browserView');
     if (!webview) {
-        console.error('Webview not found for updateTomatoMode');
+        console.error('updateTomatoMode 未找到 Webview');
         return;
     }
     
@@ -522,7 +517,7 @@ function updateTomatoMode() {
                 max-width: 100% !important;
             }
         `);
-        console.log('Tomato mode CSS injected');
+        console.log('番茄模式 CSS 已注入');
     }
 }
 
@@ -544,9 +539,8 @@ function maximizeWindow() {
 }
 
 function minimizeWindow() {
-    console.log('Minimize button clicked, hiding window instead');
+    console.log('最小化按钮被点击，改为隐藏窗口');
     if (currentWindow) {
         currentWindow.hide();
     }
 }
-

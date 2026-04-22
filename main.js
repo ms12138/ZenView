@@ -101,27 +101,9 @@ function createTray() {
 }
 
 function registerShortcuts() {
-  // 改用合法组合键，比如 Alt+G
-  const success = globalShortcut.register('Alt+G', () => {
-    const now = Date.now();
-    if (now - lastAltPressTime < DOUBLE_PRESS_INTERVAL) {
-      if (mainWindow) {
-        if (mainWindow.isVisible()) {
-          mainWindow.hide();
-        } else {
-          mainWindow.show();
-          mainWindow.focus();
-          // Send message to renderer to restore border
-          mainWindow.webContents.send('restore-border');
-        }
-      }
-    }
-    lastAltPressTime = now;
-  });
-
-  if (!success) {
-    console.error('注册 Alt+G 失败，可能已被系统占用');
-  }
+  // 移除了 Alt+G 快捷键，改为双击鼠标中键显示/隐藏窗口
+  // 该功能已在 scripts.js 中实现
+  console.log('Shortcuts registered: double middle click to show/hide window');
 }
 
 app.on('ready', () => {

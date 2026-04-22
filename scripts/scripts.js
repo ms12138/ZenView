@@ -357,7 +357,8 @@ function toggleSettings() {
 function loadSettings() {
     const saveLastPage = localStorage.getItem('zenview-save-last-page') === 'true';
     const alwaysOnTop = localStorage.getItem('zenview-always-on-top') !== 'false';
-    isAutoHideEnabled = localStorage.getItem('zenview-auto-hide') === 'true';
+    // 无论上次设置如何，启动时默认关闭鼠标移出自动隐藏功能
+    isAutoHideEnabled = false;
     isTomatoModeEnabled = localStorage.getItem('zenview-tomato-mode') === 'true';
     isBorderHidden = localStorage.getItem('zenview-border-hidden') === 'true';
     

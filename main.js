@@ -101,10 +101,15 @@ function createTray() {
 }
 
 function registerShortcuts() {
-  // 改用合法组合键，比如 Alt+G
-  const success = globalShortcut.register('Alt+G', () => {
+  // 注册全局快捷键双击 Backquote 键（ESC 下面的 `·` 键）来显示/隐藏窗口
+  // 这是为了弥补双击中键在窗口隐藏后无法恢复的问题
+  let lastBackquotePressTime = 0;
+  const DOUBLE_PRESS_INTERVAL = 300;
+  
+  const success = globalShortcut.register('`', () => {
     const now = Date.now();
-    if (now - lastAltPressTime < DOUBLE_PRESS_INTERVAL) {
+    if (now - lastBackquotePressTime < DOUBLE_PRESS_INTERVAL) {
+      // 双击 Backquote 键
       if (mainWindow) {
         if (mainWindow.isVisible()) {
           mainWindow.hide();
@@ -116,12 +121,19 @@ function registerShortcuts() {
         }
       }
     }
-    lastAltPressTime = now;
+    lastBackquotePressTime = now;
   });
 
-  if (!success) {
-    console.error('注册 Alt+G 失败，可能已被系统占用');
+  if (success) {
+    console.log('Global shortcut double Backtick (`) registered for show/hide window');
+  } else {
+    console.error('注册 Backtick 失败，可能已被系统占用');
   }
+  
+  console.log('Shortcuts:');
+  console.log('1. Double middle click to show/hide window (when window is visible)');
+  console.log('2. Double Backtick (`) to show/hide window (works even when window is hidden)');
+  console.log('3. Double-click tray icon to show/hide window');
 }
 
 app.on('ready', () => {

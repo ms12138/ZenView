@@ -10,6 +10,10 @@ let isAutoHideEnabled = false;
 let isTomatoModeEnabled = false;
 let isSettingsPanelOpen = false;
 
+// 双击中键相关
+let lastMiddleClickTime = 0;
+const DOUBLE_CLICK_INTERVAL = 300;
+
 $(document).ready(function () {
     var webview = document.getElementById('browserView');
     var currentWindow = remote.getCurrentWindow();
@@ -42,6 +46,27 @@ $(document).ready(function () {
     // 设置按钮点击阻止冒泡
     $('.settings').on('click', function(e) {
         e.stopPropagation();
+    });
+    
+    // 双击鼠标中键显示/隐藏窗口
+    $(document).on('mousedown', function(e) {
+        if (e.button === 1) { // 中键
+            var now = Date.now();
+            if (now - lastMiddleClickTime < DOUBLE_CLICK_INTERVAL) {
+                console.log('Double middle click detected');
+                if (currentWindow.isVisible()) {
+                    console.log('Hiding window');
+                    currentWindow.hide();
+                } else {
+                    console.log('Showing window');
+                    currentWindow.show();
+                    currentWindow.focus();
+                }
+                lastMiddleClickTime = 0;
+            } else {
+                lastMiddleClickTime = now;
+            }
+        }
     });
     
     webview.addEventListener('dom-ready', function () {
@@ -80,6 +105,13 @@ $(document).ready(function () {
     webview.addEventListener('did-navigate-in-page', function(e) {
         console.log('Webview navigated in page: ' + e.url);
         $('#urlField').val(e.url);
+    });
+    
+    // 处理新窗口请求
+    webview.addEventListener('new-window', function(e) {
+        e.preventDefault();
+        console.log('Webview new window request: ' + e.url);
+        webview.src = e.url;
     });
     
     window.addEventListener('message', function(event) {
@@ -138,18 +170,19 @@ $(document).ready(function () {
     let mouseLeaveTimer;
     let mouseInWindow = true;
     
+    // 减少延迟，提高灵敏度
+    const MOUSE_LEAVE_DELAY = 200; // 从 500ms 减少到 200ms
+    
     $(window).on('mouseleave', function(e) {
         if (isAutoHideEnabled && currentWindow.isVisible()) {
-            if (e.clientY <= 0 || e.clientX <= 0 || 
-                e.clientX >= window.innerWidth || 
-                e.clientY >= window.innerHeight) {
-                mouseInWindow = false;
-                mouseLeaveTimer = setTimeout(function() {
-                    if (!mouseInWindow) {
-                        currentWindow.hide();
-                    }
-                }, 500);
-            }
+            // 简化判定条件，只要鼠标离开窗口边界就触发
+            mouseInWindow = false;
+            mouseLeaveTimer = setTimeout(function() {
+                if (!mouseInWindow) {
+                    console.log('Mouse left window, hiding...');
+                    currentWindow.hide();
+                }
+            }, MOUSE_LEAVE_DELAY);
         }
     });
     
@@ -157,6 +190,7 @@ $(document).ready(function () {
         mouseInWindow = true;
         if (mouseLeaveTimer) {
             clearTimeout(mouseLeaveTimer);
+            console.log('Mouse returned to window, canceling hide');
         }
     });
     
@@ -215,9 +249,31 @@ function handleWebviewScroll(data) {
 }
 
 function changeOpacity(opacity) {
-    const currentWindow = remote.getCurrentWindow();
-    currentWindow.setOpacity(opacity);
-    console.log('Window opacity set to: ' + opacity);
+    console.log('changeOpacity called with: ' + opacity);
+    
+    try {
+        // 尝试使用直接获取的窗口
+        const currentWindow = remote.getCurrentWindow();
+        if (currentWindow) {
+            currentWindow.setOpacity(opacity);
+            console.log('Window opacity set to: ' + opacity);
+        } else {
+            console.error('Current window not found');
+        }
+    } catch (error) {
+        console.error('Error setting opacity:', error);
+        // 尝试备用方法 - 获取所有窗口
+        try {
+            const allWindows = BrowserWindow.getAllWindows();
+            if (allWindows.length > 0) {
+                const mainWindow = allWindows[0];
+                mainWindow.setOpacity(opacity);
+                console.log('Opacity set using alternative method: ' + opacity);
+            }
+        } catch (e) {
+            console.error('Alternative method failed:', e);
+        }
+    }
 }
 
 function enableClickThrough() {
@@ -290,9 +346,11 @@ function toggleSettings() {
     if (settingsPanel.is(':visible')) {
         settingsPanel.hide();
         isSettingsPanelOpen = false;
+        console.log('Settings panel closed');
     } else {
         settingsPanel.show();
         isSettingsPanelOpen = true;
+        console.log('Settings panel opened');
     }
 }
 
@@ -418,6 +476,7 @@ function maximizeWindow() {
 
 function minimizeWindow() {
     const currentWindow = remote.getCurrentWindow();
-    currentWindow.minimize();
+    console.log('Minimize button clicked, hiding window');
+    currentWindow.hide();
 }
 

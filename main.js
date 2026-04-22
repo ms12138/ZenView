@@ -101,30 +101,38 @@ function createTray() {
 }
 
 function registerShortcuts() {
-  // 注册全局快捷键 Space+Z 来显示/隐藏窗口
+  // 注册全局快捷键双击 Backquote 键（ESC 下面的 `·` 键）来显示/隐藏窗口
   // 这是为了弥补双击中键在窗口隐藏后无法恢复的问题
-  const success = globalShortcut.register('Space+Z', () => {
-    if (mainWindow) {
-      if (mainWindow.isVisible()) {
-        mainWindow.hide();
-      } else {
-        mainWindow.show();
-        mainWindow.focus();
-        // Send message to renderer to restore border
-        mainWindow.webContents.send('restore-border');
+  let lastBackquotePressTime = 0;
+  const DOUBLE_PRESS_INTERVAL = 300;
+  
+  const success = globalShortcut.register('Backquote', () => {
+    const now = Date.now();
+    if (now - lastBackquotePressTime < DOUBLE_PRESS_INTERVAL) {
+      // 双击 Backquote 键
+      if (mainWindow) {
+        if (mainWindow.isVisible()) {
+          mainWindow.hide();
+        } else {
+          mainWindow.show();
+          mainWindow.focus();
+          // Send message to renderer to restore border
+          mainWindow.webContents.send('restore-border');
+        }
       }
     }
+    lastBackquotePressTime = now;
   });
 
   if (success) {
-    console.log('Global shortcut Space+Z registered for show/hide window');
+    console.log('Global shortcut double Backquote (·) registered for show/hide window');
   } else {
-    console.error('注册 Space+Z 失败，可能已被系统占用');
+    console.error('注册 Backquote 失败，可能已被系统占用');
   }
   
   console.log('Shortcuts:');
   console.log('1. Double middle click to show/hide window (when window is visible)');
-  console.log('2. Space+Z to show/hide window (works even when window is hidden)');
+  console.log('2. Double Backquote (·) to show/hide window (works even when window is hidden)');
   console.log('3. Double-click tray icon to show/hide window');
 }
 

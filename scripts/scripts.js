@@ -16,6 +16,9 @@ $(document).ready(function () {
     var webview = document.getElementById('browserView');
     var currentWindow = remote.getCurrentWindow();
     
+    console.log('ZenView initialized');
+    console.log('Current window:', currentWindow);
+    
     // Load settings first
     loadSettings();
     
@@ -29,10 +32,10 @@ $(document).ready(function () {
         }
     });
     
-    // 点击设置按钮时阻止事件冒泡
+    // 点击设置按钮时阻止事件冒泡并打开/关闭设置面板
     $('.settings').on('click', function(e) {
         e.stopPropagation();
-        console.log('Settings button clicked');
+        console.log('Settings button clicked, current state:', isSettingsPanelOpen);
         toggleSettings();
     });
     
@@ -42,13 +45,23 @@ $(document).ready(function () {
         console.log('Settings panel clicked, preventing close');
     });
     
-    // 双击鼠标中键隐藏窗口
+    // 双击鼠标中键显示/隐藏窗口
     $(document).on('mousedown', function(e) {
         if (e.button === 1) { // 中键
             const now = Date.now();
             if (now - lastMiddleClickTime < DOUBLE_CLICK_INTERVAL) {
-                console.log('Double middle click detected, hiding window');
-                currentWindow.hide();
+                console.log('Double middle click detected');
+                console.log('Window visible:', currentWindow.isVisible());
+                if (currentWindow.isVisible()) {
+                    console.log('Hiding window');
+                    currentWindow.hide();
+                } else {
+                    console.log('Showing window');
+                    currentWindow.show();
+                    currentWindow.focus();
+                    // 发送恢复边框的消息
+                    ipcRenderer.send('restore-border');
+                }
                 lastMiddleClickTime = 0;
             } else {
                 lastMiddleClickTime = now;
@@ -62,28 +75,6 @@ $(document).ready(function () {
         
         // 检查番茄模式
         updateTomatoMode();
-    });
-    
-    // 监听webview所有导航相关事件
-    webview.addEventListener('will-navigate', function(e) {
-        console.log('Webview will navigate to:', e.url);
-    });
-    
-    webview.addEventListener('did-navigate', function(e) {
-        console.log('Webview did navigate to:', e.url);
-        $('#urlField').val(e.url);
-        updateTomatoMode();
-    });
-    
-    webview.addEventListener('did-navigate-in-page', function(e) {
-        console.log('Webview did navigate in page to:', e.url);
-        $('#urlField').val(e.url);
-    });
-    
-    webview.addEventListener('new-window', function(e) {
-        console.log('Webview new window requested for:', e.url);
-        // 在当前webview打开新窗口
-        webview.src = e.url;
     });
     
     window.addEventListener('message', function(event) {
@@ -191,7 +182,9 @@ $(document).ready(function () {
     
     // 初始化透明度
     setTimeout(function() {
-        changeOpacity(parseFloat($("#transparencyRange").val()));
+        var initialOpacity = parseFloat($("#transparencyRange").val());
+        console.log('Initializing transparency to:', initialOpacity);
+        changeOpacity(initialOpacity);
     }, 100);
 
     $("input[type=text]").on('click', function () {
@@ -214,11 +207,24 @@ function handleWebviewScroll(data) {
 
 function changeOpacity(opacity) {
     try {
+        // 直接从remote获取当前窗口
         const currentWindow = remote.getCurrentWindow();
+        console.log('Changing opacity to:', opacity, 'on window:', currentWindow);
         currentWindow.setOpacity(opacity);
-        console.log('Window opacity set successfully to:', opacity);
+        console.log('Window opacity set successfully');
     } catch (error) {
         console.error('Error setting opacity:', error);
+        // 尝试备用方法
+        try {
+            const win = remote.BrowserWindow.getFocusedWindow();
+            if (win) {
+                console.log('Using focused window for opacity:', win);
+                win.setOpacity(opacity);
+                console.log('Focused window opacity set successfully');
+            }
+        } catch (e) {
+            console.error('Alternative method failed:', e);
+        }
     }
 }
 
@@ -289,6 +295,7 @@ function browserBack() {
 
 function toggleSettings() {
     var settingsPanel = $('#settingsPanel');
+    console.log('toggleSettings called, current visibility:', settingsPanel.is(':visible'));
     if (settingsPanel.is(':visible')) {
         settingsPanel.hide();
         isSettingsPanelOpen = false;

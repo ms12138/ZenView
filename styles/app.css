@@ -9,7 +9,7 @@
           box-sizing: border-box;
   -webkit-app-region: drag;
   z-index: 10000;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(240, 240, 240, 0.95);
   position: relative;
   transition: transform 0.3s ease-in-out;
 }
@@ -158,7 +158,7 @@ body {
   top: 42px;
   left: 2px;
   z-index: 10000;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(240, 240, 240, 0.95);
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   padding: 0px 15px 0 0;
@@ -260,6 +260,7 @@ body {
   transition: 0.2s;
   opacity: 0.75;
   margin-left: 35px;
+  filter: grayscale(100%);
 }
 
 .app-controls #clickthroughButton:hover {
@@ -327,7 +328,7 @@ input[type=range]:focus::-webkit-slider-runnable-track {
   top: 45px;
   right: 10px;
   width: 220px;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(240, 240, 240, 0.95);
   padding: 15px;
   border-radius: 8px;
   z-index: 15000;
@@ -391,8 +392,6 @@ input[type=range]:focus::-webkit-slider-runnable-track {
   opacity: 0.75;
   display: block;
   margin: 0 auto;
-  -webkit-filter: invert(100%);
-          filter: invert(100%);
 }
 
 .window-chrome .window-controls .settings:hover {

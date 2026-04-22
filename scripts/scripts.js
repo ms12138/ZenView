@@ -6,6 +6,7 @@ const fs = require("fs");
 
 let isBorderHidden = false;
 let isAutoHideEnabled = false;
+let isTomatoModeEnabled = false;
 
 $(document).ready(function () {
     var webview = document.getElementById('browserView');
@@ -19,7 +20,7 @@ $(document).ready(function () {
         // Inject scroll listener for novel toolbar interaction
         webview.executeJavaScript(`
             let lastScrollTop = 0;
-            window.addEventListener('scroll', function() {
+            function handleScroll() {
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                 // Send scroll event to parent
                 window.postMessage({ 
@@ -28,7 +29,12 @@ $(document).ready(function () {
                     direction: scrollTop > lastScrollTop ? 'down' : 'up' 
                 }, '*');
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-            });
+            }
+            window.addEventListener('scroll', handleScroll);
+            // Also add scroll listener to document
+            document.addEventListener('scroll', handleScroll);
+            // Add scroll listener to body
+            document.body.addEventListener('scroll', handleScroll);
             true;
         `);
     });
@@ -57,17 +63,50 @@ $(document).ready(function () {
         isAutoHideEnabled = $(this).is(':checked');
         saveSettings();
     });
+    $('#tomatoMode').change(function() {
+        isTomatoModeEnabled = $(this).is(':checked');
+        saveSettings();
+        updateTomatoMode();
+    });
     
-    // Mouse leave event for auto hide
-    $(document).mouseleave(function() {
+    // Mouse leave event for auto hide (fixed)
+    let mouseLeaveTimer;
+    
+    // Track mouse position
+    let mouseInWindow = true;
+    
+    // Only trigger auto-hide when mouse leaves the entire window
+    $(window).on('mouseleave', function(e) {
         if (isAutoHideEnabled && currentWindow.isVisible()) {
-            currentWindow.hide();
+            // Check if the mouse is actually leaving the window
+            // and not just moving over the title bar or address bar
+            if (e.clientY <= 0 || e.clientX <= 0 || 
+                e.clientX >= window.innerWidth || 
+                e.clientY >= window.innerHeight) {
+                mouseInWindow = false;
+                // Add a small delay to prevent accidental triggers
+                mouseLeaveTimer = setTimeout(function() {
+                    if (!mouseInWindow) {
+                        currentWindow.hide();
+                    }
+                }, 500);
+            }
         }
     });
     
-    // Page load complete - update URL bar
+    // Cancel auto-hide if mouse returns to window
+    $(window).on('mouseenter', function() {
+        mouseInWindow = true;
+        if (mouseLeaveTimer) {
+            clearTimeout(mouseLeaveTimer);
+        }
+    });
+    
+    // Page load complete - update URL bar and check tomato mode
     webview.addEventListener('did-finish-load', function() {
         $('#urlField').val(webview.getURL());
+        // Check if tomato mode should be applied
+        updateTomatoMode();
     });
     
     // Save URL before window closes
@@ -122,7 +161,8 @@ function handleWebviewScroll(data) {
 
 // Change window opacity
 function changeOpacity(opacity) {
-    $("#bgOverlay").css('background-color', 'rgba(255, 255, 255, ' + opacity + ')');
+    const currentWindow = remote.getCurrentWindow();
+    currentWindow.setOpacity(opacity);
 }
 
 // Toggle border/toolbar visibility using eye icon
@@ -132,7 +172,6 @@ function enableClickThrough() {
 
 function toggleBorder() {
     const webview = $('#browserView');
-    const bgOverlay = $('#bgOverlay');
     const windowChrome = $('.window-chrome');
     const appControls = $('.app-controls');
     
@@ -141,13 +180,11 @@ function toggleBorder() {
     if (isBorderHidden) {
         // Hide border and controls
         webview.addClass('full-size');
-        bgOverlay.hide();
         windowChrome.hide();
         appControls.hide();
     } else {
         // Show border and controls
         webview.removeClass('full-size');
-        bgOverlay.show();
         windowChrome.show();
         appControls.show();
     }
@@ -200,11 +237,13 @@ function loadSettings() {
     const saveLastPage = localStorage.getItem('zenview-save-last-page') === 'true';
     const alwaysOnTop = localStorage.getItem('zenview-always-on-top') !== 'false'; // default true
     isAutoHideEnabled = localStorage.getItem('zenview-auto-hide') === 'true';
+    isTomatoModeEnabled = localStorage.getItem('zenview-tomato-mode') === 'true';
     isBorderHidden = localStorage.getItem('zenview-border-hidden') === 'true';
     
     $('#saveLastPage').prop('checked', saveLastPage);
     $('#alwaysOnTop').prop('checked', alwaysOnTop);
     $('#autoHide').prop('checked', isAutoHideEnabled);
+    $('#tomatoMode').prop('checked', isTomatoModeEnabled);
     
     // Apply always on top
     const currentWindow = remote.getCurrentWindow();
@@ -214,6 +253,9 @@ function loadSettings() {
     if (isBorderHidden) {
         toggleBorder();
     }
+    
+    // Apply tomato mode
+    updateTomatoMode();
 }
 
 // Save settings to localStorage
@@ -221,11 +263,37 @@ function saveSettings() {
     localStorage.setItem('zenview-save-last-page', $('#saveLastPage').is(':checked'));
     localStorage.setItem('zenview-always-on-top', $('#alwaysOnTop').is(':checked'));
     localStorage.setItem('zenview-auto-hide', $('#autoHide').is(':checked'));
+    localStorage.setItem('zenview-tomato-mode', $('#tomatoMode').is(':checked'));
 }
 
 // Open website (info button)
 function openWebsite() {
     shell.openExternal('https://github.com'); // You can change this to your project URL
+}
+
+// Update tomato reading mode
+function updateTomatoMode() {
+    const webview = document.getElementById('browserView');
+    const currentUrl = webview.getURL();
+    const windowChrome = $('.window-chrome');
+    const appControls = $('.app-controls');
+    
+    // Check if current URL is a tomato novel reading page
+    const isNovelPage = currentUrl.includes('fanqienovel.com') || currentUrl.includes('qidian.com') || currentUrl.includes('read.tomato');
+    
+    if (isTomatoModeEnabled && isNovelPage) {
+        // Hide toolbar and title bar for novel reading
+        windowChrome.hide();
+        appControls.hide();
+        $('#browserView').addClass('full-size');
+    } else {
+        // Show toolbar and title bar if not in tomato mode or not on novel page
+        if (!isBorderHidden) {
+            windowChrome.show();
+            appControls.show();
+            $('#browserView').removeClass('full-size');
+        }
+    }
 }
 
 // Window controls

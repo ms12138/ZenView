@@ -18,7 +18,7 @@ $(document).ready(function () {
     loadSettings();
     
     // 点击其他地方关闭设置面板
-    $(document).click(function(e) {
+    $(document).on('click', function(e) {
         if (isSettingsPanelOpen) {
             var settingsPanel = $('#settingsPanel');
             var settingsButton = $('.settings');
@@ -35,12 +35,12 @@ $(document).ready(function () {
     });
     
     // 阻止设置面板点击事件冒泡
-    $('#settingsPanel').click(function(e) {
+    $('#settingsPanel').on('click', function(e) {
         e.stopPropagation();
     });
     
     // 设置按钮点击阻止冒泡
-    $('.settings').click(function(e) {
+    $('.settings').on('click', function(e) {
         e.stopPropagation();
     });
     
@@ -60,6 +60,26 @@ $(document).ready(function () {
             window.addEventListener('scroll', handleScroll);
             true;
         `);
+        
+        // 检查番茄模式
+        updateTomatoMode();
+    });
+    
+    // 监听webview导航事件
+    webview.addEventListener('will-navigate', function(e) {
+        console.log('Webview will navigate to: ' + e.url);
+        // 这里可以添加导航拦截逻辑
+    });
+    
+    webview.addEventListener('did-navigate', function(e) {
+        console.log('Webview navigated to: ' + e.url);
+        $('#urlField').val(e.url);
+        updateTomatoMode();
+    });
+    
+    webview.addEventListener('did-navigate-in-page', function(e) {
+        console.log('Webview navigated in page: ' + e.url);
+        $('#urlField').val(e.url);
     });
     
     window.addEventListener('message', function(event) {
@@ -90,24 +110,24 @@ $(document).ready(function () {
     });
     
     // 设置控件事件监听器
-    $('#saveLastPage').change(function() {
+    $('#saveLastPage').on('change', function() {
         console.log('saveLastPage changed');
         saveSettings();
     });
     
-    $('#alwaysOnTop').change(function() {
+    $('#alwaysOnTop').on('change', function() {
         console.log('alwaysOnTop changed: ' + $(this).is(':checked'));
         saveSettings();
         currentWindow.setAlwaysOnTop($(this).is(':checked'));
     });
     
-    $('#autoHide').change(function() {
+    $('#autoHide').on('change', function() {
         console.log('autoHide changed: ' + $(this).is(':checked'));
         isAutoHideEnabled = $(this).is(':checked');
         saveSettings();
     });
     
-    $('#tomatoMode').change(function() {
+    $('#tomatoMode').on('change', function() {
         console.log('tomatoMode changed: ' + $(this).is(':checked'));
         isTomatoModeEnabled = $(this).is(':checked');
         saveSettings();
@@ -160,7 +180,7 @@ $(document).ready(function () {
     }
 
     // 地址栏表单提交处理
-    $("#addressBar").submit(function(e) {
+    $("#addressBar").on('submit', function(e) {
         e.preventDefault();
         console.log("Address bar form submitted");
         loadURL();
@@ -176,7 +196,7 @@ $(document).ready(function () {
     
     changeOpacity(parseFloat($("#transparencyRange").val()));
 
-    $("input[type=text]").click(function () {
+    $("input[type=text]").on('click', function () {
        $(this).select();
     });
 });
@@ -197,6 +217,7 @@ function handleWebviewScroll(data) {
 function changeOpacity(opacity) {
     const currentWindow = remote.getCurrentWindow();
     currentWindow.setOpacity(opacity);
+    console.log('Window opacity set to: ' + opacity);
 }
 
 function enableClickThrough() {
@@ -323,8 +344,6 @@ function updateTomatoMode() {
     } catch(e) {
         currentUrl = '';
     }
-    const windowChrome = $('.window-chrome');
-    const appControls = $('.app-controls');
     
     const isNovelPage = currentUrl.includes('fanqienovel.com') || 
                        currentUrl.includes('qidian.com') || 
@@ -335,15 +354,51 @@ function updateTomatoMode() {
                 ', isBorderHidden=' + isBorderHidden);
     
     if (isTomatoModeEnabled && isNovelPage) {
-        windowChrome.hide();
-        appControls.hide();
-        $('#browserView').addClass('full-size');
+        // 注入CSS来隐藏网页中的工具箱和标题栏元素
+        webview.insertCSS(`
+            /* 隐藏工具箱元素 */
+            .reader-toolbar,
+            .reader-toolbar-item,
+            .fade-toolbar-exit-done,
+            
+            /* 隐藏标题栏元素 */
+            .muye-reader-nav,
+            .top-nav-enter-done,
+            .muye-reader-nav-inner,
+            .muye-reader-nav-title,
+            
+            /* 隐藏其他可能的工具栏 */
+            .reader-toolbar-swiper-item,
+            .font-slider-popover,
+            .use-reader-theme,
+            .slogin-user-avatar {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                position: absolute !important;
+                top: -9999px !important;
+                left: -9999px !important;
+            }
+            
+            /* 确保内容区域充满屏幕 */
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            /* 可能的内容区域 */
+            .reader-content,
+            .chapter-content,
+            .content {
+                margin: 0 !important;
+                padding: 15px !important;
+                max-width: 100% !important;
+            }
+        `);
+        console.log('Tomato mode CSS injected');
     } else {
-        if (!isBorderHidden) {
-            windowChrome.show();
-            appControls.show();
-            $('#browserView').removeClass('full-size');
-        }
+        // 移除番茄模式的CSS（如果需要）
+        console.log('Tomato mode disabled or not on novel page');
     }
 }
 

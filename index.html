@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Glass Browser</title>
+        <title>ZenView</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="styles/vendor/reset.css" rel="stylesheet">
         <link href="styles/app.css" rel="stylesheet">
@@ -13,24 +13,51 @@
 <body>
 
     <div class="window-chrome">
-        <div class="app-label">glass browser</div>
+        <div class="app-label">ZenView</div>
         <div class="window-controls">
             <div class="info" onclick="openWebsite()"><img src="assets/ui/info.png"/></div>
+            <div class="settings" onclick="toggleSettings()"><img src="assets/ui/eye.png"/></div>
+            <div class="minimize" onclick="minimizeWindow()"><img src="assets/ui/minimize.png" /></div>
             <div class="maximize" onclick="maximizeWindow()"><img src="assets/ui/maximize.png" /></div>
             <div class="close" onclick="closeWindow()"><img src="assets/ui/close.png" /></div>
         </div>
     </div>
 
+    <!-- 弹出的设置面板 -->
+    <div id="settingsPanel" class="settings-panel">
+        <h3>设置</h3>
+        <div class="setting-item">
+            <label>
+                <input type="checkbox" id="saveLastPage"> 保持上次关闭的网页
+            </label>
+        </div>
+        <div class="setting-item">
+            <label>
+                <input type="checkbox" id="alwaysOnTop" checked> 窗口置顶
+            </label>
+        </div>
+        <div class="setting-item">
+            <label>
+                <input type="checkbox" id="autoHide"> 鼠标移出窗口时自动隐藏
+            </label>
+        </div>
+        <div class="setting-item">
+            <label>
+                <input type="checkbox" id="tomatoMode"> 番茄阅读模式
+            </label>
+        </div>
+    </div>
+
     <div class="app-controls">
         <form id="addressBar">
-            <button onclick="browserBack()"><img src="assets/ui/back.png" /></button>
+            <button type="button" onclick="browserBack()"><img src="assets/ui/back.png" /></button>
             <input type="text" value="https://www.baidu.com/" id="urlField"/>
         </form>
         <input type="range" value="0.95" min="0.2" max="1" step="0.05" id="transparencyRange"/>
         <button onclick="enableClickThrough()" id="clickthroughButton"><img src="assets/ui/eye.png"/></button>
     </div>
 
-    <webview id="browserView" src="https://www.baidu.com/" style="display:inline-flex; width:100%;"></webview>
+    <webview id="browserView" src="https://www.baidu.com/" style="display:inline-flex; width:100%;" webpreferences="nodeIntegration=no,contextIsolation=yes,webSecurity=no"></webview>
 
 
 

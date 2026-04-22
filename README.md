@@ -4,10 +4,16 @@
 > 此项目基于 [glass-browser](https://github.com/mitchas/glass-browser) 修改而来。
 
 
-一个适用于 Windows 的浮动透明浏览器。
-  - 始终保持在其他程序和应用之上。
-  - 可调整透明度。
-  - 点击穿透模式，忽略点击并允许您与背后的应用交互。
+一个适用于 Windows 的摸鱼浏览器。
+  - 一键开启无边框沉浸模式
+  - 随心调节窗口透明度
+  - 任意调节窗口大小
+  - 窗口置顶
+  - 鼠标移出浏览器窗口自动隐藏
+  - 无任务栏便签
+  - 快速隐藏快捷键：双击鼠标中键+全局显隐快捷键：双击 Backquote 键
+  - 记录上次打开网页
+  - 番茄小说专属阅读优化
 
 ![N|Solid](https://github.com/mitchas/glass-browser/raw/master/assets/screenshot.PNG)
 

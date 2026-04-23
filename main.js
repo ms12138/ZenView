@@ -149,7 +149,23 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
-// 移除透明度变更处理，因为现在直接在渲染进程中调整网页内容透明度
+// 处理来自渲染进程的透明度变更请求
+ipcMain.on('set-opacity', (event, opacity) => {
+  console.log('Received set-opacity request:', opacity);
+  if (mainWindow) {
+    try {
+      mainWindow.setOpacity(opacity);
+      console.log('Window opacity set to:', opacity);
+      event.sender.send('opacity-set', true, opacity);
+    } catch (error) {
+      console.error('Error setting opacity:', error);
+      event.sender.send('opacity-set', false, error.message);
+    }
+  } else {
+    console.error('Main window not found');
+    event.sender.send('opacity-set', false, 'Main window not found');
+  }
+});
 
 app.on('activate', () => {
   if (mainWindow === null) createWindow();

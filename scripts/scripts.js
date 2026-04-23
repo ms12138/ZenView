@@ -252,48 +252,47 @@ function changeOpacity(opacity) {
     console.log('changeOpacity called with: ' + opacity);
     
     try {
-        // 获取 webview 元素
-        const webview = document.getElementById('browserView');
+        // 通过 IPC 向主进程发送透明度变更请求
+        ipcRenderer.send('set-opacity', opacity);
+        console.log('Sent set-opacity request to main process');
         
-        // 向 webview 注入 CSS 来调整网页内容和滚动条的透明度
-        webview.insertCSS(`
-            /* 调整整个网页内容的透明度 */
-            body {
-                opacity: ${opacity} !important;
-            }
-            
-            /* 确保滚动条也跟随透明度 */
-            ::-webkit-scrollbar {
-                opacity: ${opacity} !important;
-            }
-            
-            ::-webkit-scrollbar-track {
-                opacity: ${opacity} !important;
-            }
-            
-            ::-webkit-scrollbar-thumb {
-                opacity: ${opacity} !important;
-            }
-            
-            /* 确保所有元素都继承透明度 */
-            * {
-                opacity: inherit !important;
-            }
-            
-            /* 确保背景也透明 */
-            html {
-                background-color: transparent !important;
-            }
-        `);
+        // 同时调整工具栏和边框的透明度，保持它们更不透明
+        const toolbarOpacity = Math.max(opacity, 0.95); // 工具栏至少保持 0.95 的透明度
+        $('.window-chrome').css('background-color', `rgba(240, 240, 240, ${toolbarOpacity})`);
+        $('.app-controls').css('background-color', `rgba(240, 240, 240, ${toolbarOpacity})`);
         
-        console.log('Web content opacity set to: ' + opacity);
+        console.log('Toolbar opacity set to: ' + toolbarOpacity);
         
     } catch (error) {
-        console.error('Error setting web content opacity:', error);
+        console.error('Error setting opacity:', error);
+        // 备用方法：尝试使用 remote 模块
+        try {
+            const currentWindow = remote.getCurrentWindow();
+            if (currentWindow) {
+                currentWindow.setOpacity(opacity);
+                console.log('Window opacity set to: ' + opacity);
+                
+                // 同时调整工具栏和边框的透明度
+                const toolbarOpacity = Math.max(opacity, 0.95);
+                $('.window-chrome').css('background-color', `rgba(240, 240, 240, ${toolbarOpacity})`);
+                $('.app-controls').css('background-color', `rgba(240, 240, 240, ${toolbarOpacity})`);
+            } else {
+                console.error('Current window not found');
+            }
+        } catch (e) {
+            console.error('Remote method failed:', e);
+        }
     }
 }
 
-// 移除透明度响应监听，因为现在直接在渲染进程中调整网页内容透明度
+// 监听主进程的透明度设置响应
+ipcRenderer.on('opacity-set', (event, success, data) => {
+    if (success) {
+        console.log('Opacity set successfully:', data);
+    } else {
+        console.error('Opacity set failed:', data);
+    }
+});
 
 function enableClickThrough() {
     console.log('enableClickThrough called, current isBorderHidden: ' + isBorderHidden);

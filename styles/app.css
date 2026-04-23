@@ -50,7 +50,8 @@
 .window-chrome .window-controls .minimize,
 .window-chrome .window-controls .maximize,
 .window-chrome .window-controls .info,
-.window-chrome .window-controls .close {
+.window-chrome .window-controls .close,
+.window-chrome .window-controls .settings {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -65,6 +66,11 @@
           box-sizing: border-box;
   width: 45px;
   -webkit-app-region: no-drag;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: default;
 }
 
 .window-chrome .window-controls .minimize img,

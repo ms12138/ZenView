@@ -173,10 +173,16 @@ $(document).ready(function () {
     // 减少延迟，提高灵敏度
     const MOUSE_LEAVE_DELAY = 200; // 从 500ms 减少到 200ms
     
+    // 监听鼠标离开窗口事件
     $(window).on('mouseleave', function(e) {
         if (isAutoHideEnabled && currentWindow.isVisible()) {
-            // 简化判定条件，只要鼠标离开窗口边界就触发
+            // 标记鼠标已离开
             mouseInWindow = false;
+            // 清除之前的定时器
+            if (mouseLeaveTimer) {
+                clearTimeout(mouseLeaveTimer);
+            }
+            // 设置新的定时器
             mouseLeaveTimer = setTimeout(function() {
                 if (!mouseInWindow) {
                     console.log('Mouse left window, hiding...');
@@ -186,11 +192,26 @@ $(document).ready(function () {
         }
     });
     
+    // 监听鼠标进入窗口事件
     $(window).on('mouseenter', function() {
         mouseInWindow = true;
         if (mouseLeaveTimer) {
             clearTimeout(mouseLeaveTimer);
             console.log('Mouse returned to window, canceling hide');
+        }
+    });
+    
+    // 额外监听鼠标移动事件，确保缓慢移动时也能正确捕获
+    $(window).on('mousemove', function(e) {
+        // 当鼠标靠近窗口边缘时，检查是否有离开的趋势
+        const edgeThreshold = 5; // 边缘阈值
+        const isNearEdge = e.clientX < edgeThreshold || 
+                          e.clientX > window.innerWidth - edgeThreshold || 
+                          e.clientY < edgeThreshold || 
+                          e.clientY > window.innerHeight - edgeThreshold;
+        
+        if (isNearEdge && isAutoHideEnabled && currentWindow.isVisible()) {
+            // 可以在这里添加额外的逻辑，比如显示提示等
         }
     });
     

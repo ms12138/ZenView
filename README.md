@@ -37,3 +37,8 @@
 - 点击眼睛图标（透明度滑块旁）启用沉浸阅读模式（隐藏浏览器边框）。
 - 点击最小化旁眼睛图标可看到设置菜单。
 - 双击Backquote 键触发隐藏。
+
+## 缓存位置
+浏览器保存的记录和设置缓存位置：
+- 存储方式：使用 localStorage（HTML5 本地存储）
+- 存储位置：%APPDATA%\ZenView\Local Storage\leveldb

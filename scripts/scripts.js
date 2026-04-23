@@ -222,13 +222,46 @@ $(document).ready(function () {
     });
 
     // 透明度滑块
-    $("#transparencyRange").on('input change', function(){
-        var opacityValue = parseFloat($(this).val());
-        console.log('Transparency changed: ' + opacityValue);
-        changeOpacity(opacityValue);
-    });
-    
-    changeOpacity(parseFloat($("#transparencyRange").val()));
+    var slider = document.getElementById('transparencyRange');
+    if (slider) {
+        slider.oninput = function() {
+            var opacityValue = parseFloat(this.value);
+            
+            // 设置窗口透明度
+            var currentWindow = remote.getCurrentWindow();
+            if (currentWindow && currentWindow.setOpacity) {
+                currentWindow.setOpacity(opacityValue);
+            }
+            
+            // 调整工具栏和边框的透明度，保持它们更不透明
+            var toolbarOpacity = Math.max(opacityValue, 0.95);
+            var windowChrome = document.querySelector('.window-chrome');
+            var appControls = document.querySelector('.app-controls');
+            if (windowChrome) {
+                windowChrome.style.backgroundColor = 'rgba(240, 240, 240, ' + toolbarOpacity + ')';
+            }
+            if (appControls) {
+                appControls.style.backgroundColor = 'rgba(240, 240, 240, ' + toolbarOpacity + ')';
+            }
+        };
+        
+        // 初始化透明度
+        var initialOpacity = parseFloat(slider.value);
+        var currentWindow = remote.getCurrentWindow();
+        if (currentWindow && currentWindow.setOpacity) {
+            currentWindow.setOpacity(initialOpacity);
+        }
+        
+        var toolbarOpacity = Math.max(initialOpacity, 0.95);
+        var windowChrome = document.querySelector('.window-chrome');
+        var appControls = document.querySelector('.app-controls');
+        if (windowChrome) {
+            windowChrome.style.backgroundColor = 'rgba(240, 240, 240, ' + toolbarOpacity + ')';
+        }
+        if (appControls) {
+            appControls.style.backgroundColor = 'rgba(240, 240, 240, ' + toolbarOpacity + ')';
+        }
+    }
 
     $("input[type=text]").on('click', function () {
        $(this).select();

@@ -14,8 +14,8 @@
   ],
   "author": "Mitch Samuels",
   "devDependencies": {
-    "electron": "~1.7.11",
-    "electron-rebuild": "^1.7.3"
+    "electron": "^10.0.0",
+    "electron-rebuild": "^2.3.4"
   },
   "dependencies": {
     "npm-check-updates": "^2.14.2"

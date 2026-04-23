@@ -18,15 +18,12 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      webviewTag: true
+      webviewTag: true,
+      enableRemoteModule: true
     }
   });
 
-  mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
-    protocol: 'file:',
-    slashes: true
-  }));
+  mainWindow.loadFile('index.html');
 
   mainWindow.setAlwaysOnTop(true);
   mainWindow.on('closed', () => { mainWindow = null; });

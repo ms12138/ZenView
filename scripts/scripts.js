@@ -252,47 +252,23 @@ function changeOpacity(opacity) {
     console.log('changeOpacity called with: ' + opacity);
     
     try {
-        // 通过 IPC 向主进程发送透明度变更请求
-        ipcRenderer.send('set-opacity', opacity);
-        console.log('Sent set-opacity request to main process');
-        
-        // 同时调整工具栏和边框的透明度，保持它们更不透明
-        const toolbarOpacity = Math.max(opacity, 0.95); // 工具栏至少保持 0.95 的透明度
-        $('.window-chrome').css('background-color', `rgba(240, 240, 240, ${toolbarOpacity})`);
-        $('.app-controls').css('background-color', `rgba(240, 240, 240, ${toolbarOpacity})`);
-        
-        console.log('Toolbar opacity set to: ' + toolbarOpacity);
-        
+        const currentWindow = remote.getCurrentWindow();
+        if (currentWindow) {
+            currentWindow.setOpacity(opacity);
+            console.log('Window opacity set to: ' + opacity);
+            
+            // 同时调整工具栏和边框的透明度，保持它们更不透明
+            const toolbarOpacity = Math.max(opacity, 0.95); // 工具栏至少保持 0.95 的透明度
+            $('.window-chrome').css('background-color', `rgba(240, 240, 240, ${toolbarOpacity})`);
+            $('.app-controls').css('background-color', `rgba(240, 240, 240, ${toolbarOpacity})`);
+            console.log('Toolbar opacity set to: ' + toolbarOpacity);
+        } else {
+            console.error('Current window not found');
+        }
     } catch (error) {
         console.error('Error setting opacity:', error);
-        // 备用方法：尝试使用 remote 模块
-        try {
-            const currentWindow = remote.getCurrentWindow();
-            if (currentWindow) {
-                currentWindow.setOpacity(opacity);
-                console.log('Window opacity set to: ' + opacity);
-                
-                // 同时调整工具栏和边框的透明度
-                const toolbarOpacity = Math.max(opacity, 0.95);
-                $('.window-chrome').css('background-color', `rgba(240, 240, 240, ${toolbarOpacity})`);
-                $('.app-controls').css('background-color', `rgba(240, 240, 240, ${toolbarOpacity})`);
-            } else {
-                console.error('Current window not found');
-            }
-        } catch (e) {
-            console.error('Remote method failed:', e);
-        }
     }
 }
-
-// 监听主进程的透明度设置响应
-ipcRenderer.on('opacity-set', (event, success, data) => {
-    if (success) {
-        console.log('Opacity set successfully:', data);
-    } else {
-        console.error('Opacity set failed:', data);
-    }
-});
 
 function enableClickThrough() {
     console.log('enableClickThrough called, current isBorderHidden: ' + isBorderHidden);

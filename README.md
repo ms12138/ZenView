@@ -1,10 +1,10 @@
-![N|Solid](https://github.com/mitchas/glass-browser/raw/master/assets/icon64.png)
+![N|Solid](./assets/icon64.png)
 # **ZenView**
 
 > 此项目基于 [glass-browser](https://github.com/mitchas/glass-browser) 修改而来。
 
 
-一个适用于 Windows 的摸鱼浏览器。
+**一个适用于 Windows 的摸鱼浏览器。**
   - 一键开启无边框沉浸模式
   - 随心调节窗口透明度
   - 任意调节窗口大小
@@ -15,7 +15,8 @@
   - 记录上次打开网页
   - 番茄小说专属阅读优化
 
-![N|Solid](https://github.com/mitchas/glass-browser/raw/master/assets/screenshot.PNG)
+![N|Solid](./assets/show1.png)
+![N|Solid](./assets/show2.png)
 
 ## 本地构建和运行：
 - 克隆仓库。
@@ -33,8 +34,6 @@
 - 输入 URL 并按 Enter
 - 调整窗口大小并定位到您想要的位置。
 - 根据您的喜好调整透明度。
-- 点击眼睛图标启用点击穿透模式。它会忽略鼠标点击并让您与下方的窗口交互。
-- 要禁用点击穿透并再次与窗口交互，请点击 Windows 任务栏中的图标并最小化它，然后再次点击打开它，点击穿透模式将被禁用。
-
-## 已知问题
-- 透明度在 Linux 上似乎不起作用 - 但它仍然会浮动在其他窗口之上。
+- 点击眼睛图标（透明度滑块旁）启用沉浸阅读模式（隐藏浏览器边框）。
+- 点击最小化旁眼睛图标可看到设置菜单。
+- 双击Backquote 键触发隐藏。

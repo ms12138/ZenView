@@ -381,7 +381,8 @@ function loadSettings() {
     // 无论上次设置如何，启动时默认关闭鼠标移出自动隐藏功能
     isAutoHideEnabled = false;
     isTomatoModeEnabled = localStorage.getItem('zenview-tomato-mode') === 'true';
-    isBorderHidden = localStorage.getItem('zenview-border-hidden') === 'true';
+    // 无论上次设置如何，启动时默认关闭边框隐藏功能
+    isBorderHidden = false;
     
     $('#saveLastPage').prop('checked', saveLastPage);
     $('#alwaysOnTop').prop('checked', alwaysOnTop);

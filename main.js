@@ -21,6 +21,9 @@ function createWindow() {
       webviewTag: true
     }
   });
+  
+  // 设置初始透明度
+  mainWindow.setOpacity(0.95);
 
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
@@ -149,7 +152,12 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
-
+// 处理来自渲染进程的透明度变更请求
+ipcMain.on('set-opacity', (event, opacity) => {
+  if (mainWindow) {
+    mainWindow.setOpacity(opacity);
+  }
+});
 
 app.on('activate', () => {
   if (mainWindow === null) createWindow();

@@ -2,7 +2,7 @@ name: Build ZenView
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, fix-all-issues-2e85de2 ]
   pull_request:
     branches: [ main ]
 

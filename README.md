@@ -1,7 +1,9 @@
 ![N|Solid](./assets/icon64.png)
 # **ZenView**
 
-> 此项目基于 [glass-browser](https://github.com/mitchas/glass-browser) 修改而来。
+> 此项目基于 [glass-browser](https://github.com/mitchas/glass-browser) 修改而来，**基础代码**遵循 **CC0 1.0** 协议（详见 `LICENSE.original`）。  
+> **新增及修改代码**（含 AI 辅助生成部分）遵循 **GPL v3** 协议（详见 `LICENSE`）。  
+> 📢 **特别声明**：本软件初衷是为打工牛马摸鱼减负，拒绝成为资本镰刀的磨刀石——**禁止任何以盈利为目的的商业闭源使用** 😎。
 
 
 **一个适用于 Windows 的摸鱼浏览器。**
